@@ -1,0 +1,106 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-primary: #180710;
+    --bg-card: rgba(36, 12, 24, 0.75);
+    --gold-primary: #F4A6B7;
+    --gold-light: #FFE4E9;
+    --gold-dark: #C96885;
+    --rose-accent: #E05285;
+    --rose-gold: #E8A598;
+    --crimson: #540B22;
+    --crimson-dark: #2B0512;
+    --text-primary: #FFF5F7;
+    --text-gold: #FFD6DF;
+    --font-serif: 'Playfair Display', Georgia, serif;
+    --font-sinhala: 'Abhaya Libre', 'Noto Serif Sinhala', serif;
+  }
+
+  body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    background-image: 
+      radial-gradient(circle at 15% 15%, rgba(224, 82, 133, 0.35) 0%, transparent 45%),
+      radial-gradient(circle at 85% 85%, rgba(232, 165, 152, 0.25) 0%, transparent 45%),
+      radial-gradient(circle at 50% 50%, rgba(26, 7, 18, 0.95) 0%, rgba(15, 3, 10, 1) 100%);
+    background-attachment: fixed;
+    font-family: var(--font-serif), system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+  }
+}
+
+/* Custom Pink & Rose Gold Foil Text Gradient */
+.gold-text-gradient {
+  background: linear-gradient(135deg, #FFF5F8 0%, #FFB6C1 30%, #E8A598 65%, #F4A6B7 85%, #FFE4E9 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gold-border {
+  border: 1px solid rgba(244, 166, 183, 0.35);
+  box-shadow: 0 4px 20px -2px rgba(224, 82, 133, 0.2), inset 0 0 15px rgba(244, 166, 183, 0.08);
+}
+
+.gold-glow-hover:hover {
+  box-shadow: 0 0 25px rgba(244, 166, 183, 0.45);
+}
+
+/* Glassmorphism Card Style */
+.glass-card {
+  background: rgba(36, 12, 24, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(244, 166, 183, 0.25);
+  border-radius: 1.5rem;
+}
+
+/* Wax Seal Pulse Animation */
+@keyframes waxPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 20px rgba(224, 82, 133, 0.45);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 35px rgba(244, 166, 183, 0.75);
+  }
+}
+
+.wax-seal-pulse {
+  animation: waxPulse 2.5s infinite ease-in-out;
+}
+
+/* Floating Flower Petals Animation */
+@keyframes floatPetal {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.7;
+  }
+  80% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(-80px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.petal-float {
+  animation: floatPetal 8s infinite ease-in-out;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #180710;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #F4A6B7, #7A1236);
+  border-radius: 4px;
+}
