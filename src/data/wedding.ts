@@ -2,27 +2,30 @@
 
 export const wedding = {
   bride: {
-    name: 'Sanduni',
-    parents: 'Daughter of Mr. & Mrs. Perera',
+    name: 'Chandula',
+    parents: 'Daughter of Mr. & Mrs. Senanayake',
     // Photo crop: which point of the image to zoom into (x% y%)
     photo: '/images/casual.png',
     photoFocus: '48% 45%',
   },
   groom: {
-    name: 'Kasun',
-    parents: 'Son of Mr. & Mrs. Wickramasinghe',
+    name: 'Nawod',
+    parents: 'Son of Mr. & Mrs. Gamage',
     photo: '/images/casual.png',
     photoFocus: '63% 40%',
   },
 
   // Local time of the ceremony (used by the countdown and calendar link)
-  date: '2026-11-28T09:30:00+05:30',
-  dateLabel: 'Saturday, 28 November 2026',
-  dateShort: '28 · 11 · 2026',
+  date: '2027-02-11T09:30:00+05:30',
+  dateLabel: 'Thursday, 11 February 2027',
+  dateShort: '11 · 02 · 2027',
   ceremonyTime: '9:30 AM',
-  rsvpBy: '15 November 2026',
+  rsvpBy: '25 January 2027',
 
   coverImage: '/images/hero.png',
+
+  // Background song: put the MP3 file in public/music/ with this name
+  music: '/music/perfect.mp3',
 
   events: [
     { time: '9:00 AM', title: 'Arrival of Guests', note: 'Welcome drinks at the reception hall' },
@@ -32,9 +35,9 @@ export const wedding = {
   ],
 
   venue: {
-    name: 'Shangri-La Colombo',
-    address: '1 Galle Face, Colombo 00200',
-    mapQuery: 'Shangri-La Colombo',
+    name: 'Monarch Imperial',
+    address: 'Sri Jayawardenepura Kotte',
+    mapQuery: 'Monarch Imperial, Sri Jayawardenepura Kotte, Sri Lanka',
   },
 
   // RSVP replies are sent to this WhatsApp number (digits only, with country code)

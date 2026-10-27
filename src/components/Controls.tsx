@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Music, VolumeX } from 'lucide-react';
+import { Pause, Play, Volume1, Volume2, VolumeX } from 'lucide-react';
+import { wedding } from '@/data/wedding';
 
 /* ---------- Bottom navigation pill ---------- */
 
@@ -50,59 +51,96 @@ export const BottomNav: React.FC = () => {
     </nav>
   );
 };
+/* ---------- Background song with volume control ---------- */
 
-/* ---------- Music toggle (soft generated melody) ---------- */
+const DEFAULT_VOLUME = 0.25;
 
-const NOTES = [261.63, 293.66, 329.63, 392.0, 440.0, 523.25, 587.33];
+const readSavedVolume = () => {
+  try {
+    const v = Number(localStorage.getItem('invite-volume'));
+    return v > 0 && v <= 1 ? v : DEFAULT_VOLUME;
+  } catch {
+    return DEFAULT_VOLUME;
+  }
+};
 
 export const MusicButton: React.FC<{ playing: boolean; onToggle: () => void }> = ({ playing, onToggle }) => {
-  const ctxRef = useRef<AudioContext | null>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const [missing, setMissing] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [volume, setVolume] = useState(readSavedVolume);
 
   useEffect(() => {
-    if (!playing) {
-      ctxRef.current?.suspend().catch(() => {});
-      return;
-    }
-    try {
-      if (!ctxRef.current) {
-        const Ctx =
-          window.AudioContext ||
-          (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-        ctxRef.current = new Ctx();
-      }
-      const ctx = ctxRef.current;
-      ctx.resume().catch(() => {});
-      let step = 0;
-
-      const playNote = () => {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(NOTES[step++ % NOTES.length], ctx.currentTime);
-        gain.gain.setValueAtTime(0.001, ctx.currentTime);
-        gain.gain.linearRampToValueAtTime(0.06, ctx.currentTime + 0.3);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.8);
-        osc.connect(gain).connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + 2);
-      };
-
-      playNote();
-      const id = setInterval(playNote, 1800);
-      return () => clearInterval(id);
-    } catch {
-      // Audio not supported
-    }
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (playing) audio.play().catch(() => {});
+    else audio.pause();
   }, [playing]);
 
+  useEffect(() => {
+    if (audioRef.current) audioRef.current.volume = volume;
+    try {
+      localStorage.setItem('invite-volume', String(volume));
+    } catch {
+      // Storage blocked; volume still works for this visit
+    }
+  }, [volume]);
+
+  // Close the volume panel when tapping elsewhere
+  useEffect(() => {
+    if (!open) return;
+    const close = (e: PointerEvent) => {
+      if (!panelRef.current?.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('pointerdown', close);
+    return () => document.removeEventListener('pointerdown', close);
+  }, [open]);
+
+  const icon = playing ? (volume < 0.4 ? Volume1 : Volume2) : VolumeX;
+  const Icon = icon;
+
   return (
-    <button
-      type="button"
-      onClick={onToggle}
-      aria-label={playing ? 'Mute music' : 'Play music'}
-      className="fixed right-4 top-4 z-40 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-blush-300 bg-white/90 text-blush-600 shadow-md backdrop-blur-md transition hover:bg-blush-50"
-    >
-      {playing ? <Music className="h-4 w-4 animate-pulse" /> : <VolumeX className="h-4 w-4" />}
-    </button>
+    <>
+      <audio ref={audioRef} src={wedding.music} loop preload="metadata" onError={() => setMissing(true)} />
+      {!missing && (
+        <div
+          ref={panelRef}
+          className="fixed right-4 top-4 z-40 flex items-center gap-2 rounded-full border border-blush-300 bg-white/90 p-1 shadow-md backdrop-blur-md"
+        >
+          {open && (
+            <>
+              <button
+                type="button"
+                onClick={onToggle}
+                aria-label={playing ? 'Pause music' : 'Play music'}
+                className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-blush-600 transition hover:bg-blush-50"
+              >
+                {playing ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+              </button>
+              <input
+                type="range"
+                min={0.05}
+                max={1}
+                step={0.05}
+                value={volume}
+                onChange={(e) => setVolume(Number(e.target.value))}
+                aria-label="Music volume"
+                className="h-1 w-28 cursor-pointer accent-blush-600"
+              />
+            </>
+          )}
+          <button
+            type="button"
+            onClick={() => setOpen((o) => !o)}
+            aria-label="Music settings"
+            aria-expanded={open}
+            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-blush-600 transition hover:bg-blush-50"
+          >
+            <Icon className={`h-4 w-4 ${playing && !open ? 'animate-pulse' : ''}`} />
+          </button>
+        </div>
+      )}
+    </>
   );
 };
