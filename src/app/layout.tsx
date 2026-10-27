@@ -1,46 +1,50 @@
-import type { Metadata } from 'next';
-import { Playfair_Display, Outfit, Noto_Serif_Sinhala } from 'next/font/google';
+import type { Metadata, Viewport } from 'next';
+import { Pinyon_Script, Cormorant_Garamond, Jost } from 'next/font/google';
+import { wedding } from '@/data/wedding';
 import './globals.css';
 
-const playfair = Playfair_Display({
+const pinyon = Pinyon_Script({
   subsets: ['latin'],
-  variable: '--font-serif',
+  weight: '400',
+  variable: '--font-pinyon',
   display: 'swap',
 });
 
-const outfit = Outfit({
+const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
-  variable: '--font-sans',
+  weight: ['400', '500', '600'],
+  style: ['normal', 'italic'],
+  variable: '--font-cormorant',
   display: 'swap',
 });
 
-const sinhala = Noto_Serif_Sinhala({
-  subsets: ['sinhala'],
-  variable: '--font-sinhala',
-  weight: ['400', '600', '700'],
+const jost = Jost({
+  subsets: ['latin'],
+  weight: ['300', '400', '500'],
+  variable: '--font-jost',
   display: 'swap',
 });
+
+const names = `${wedding.bride.name} & ${wedding.groom.name}`;
 
 export const metadata: Metadata = {
-  title: 'Kasun & Sanduni - Sri Lankan Digital Wedding Invitation',
-  description: 'Cordially inviting family and friends to celebrate the sacred wedding ceremony of Kasun & Sanduni under auspicious Sri Lankan Poruwa rituals.',
+  title: `${names} — Wedding Invitation`,
+  description: `You are invited to celebrate the wedding of ${names}.`,
   openGraph: {
-    title: 'Kasun & Sanduni Digital Wedding Invitation',
-    description: 'Auspicious times (Nakath), RSVP, Location, and Blessings Wall.',
+    title: `${names} — Wedding Invitation`,
+    description: `Join us on ${wedding.dateLabel} at ${wedding.venue.name}.`,
     images: ['/images/hero.png'],
   },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export const viewport: Viewport = {
+  themeColor: '#fdf2f4',
+};
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${playfair.variable} ${outfit.variable} ${sinhala.variable} scroll-smooth`}>
-      <body className="min-h-screen bg-[#180710] text-[#FFF5F7] font-sans antialiased selection:bg-pink-500 selection:text-white">
-        {children}
-      </body>
+    <html lang="en" className={`${pinyon.variable} ${cormorant.variable} ${jost.variable}`}>
+      <body className="min-h-screen antialiased">{children}</body>
     </html>
   );
 }

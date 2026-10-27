@@ -1,135 +1,62 @@
 'use client';
 
-import React, { useState } from 'react';
-import { EnvelopeHero } from '@/components/EnvelopeHero';
-import { Navbar } from '@/components/Navbar';
-import { CountdownTimer } from '@/components/CountdownTimer';
-import { CoupleStory } from '@/components/CoupleStory';
-import { NakathTimeline } from '@/components/NakathTimeline';
-import { VenueMap } from '@/components/VenueMap';
-import { RsvpForm } from '@/components/RsvpForm';
-import { WishesWall } from '@/components/WishesWall';
-import { PhotoGallery } from '@/components/PhotoGallery';
-import { MusicPlayer } from '@/components/MusicPlayer';
-import { CustomizerModal } from '@/components/CustomizerModal';
+import React, { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import { AnimatePresence } from 'framer-motion';
+import { Cover } from '@/components/Cover';
+import { Hero } from '@/components/Hero';
+import { ShareLinks, Couple, Events, Venue, Wishes, Contact, Footer } from '@/components/Sections';
+import { Rsvp } from '@/components/Rsvp';
+import { BottomNav, MusicButton } from '@/components/Controls';
+import { FallingFeathers } from '@/components/ui';
 
-import { initialCoupleDetails, initialNakathTimes, initialWishes, dictionary } from '@/data/dictionary';
-import { CoupleDetails, GuestWish, Language } from '@/types/wedding';
-import { Heart, Sparkles } from 'lucide-react';
+const noSubscribe = () => () => {};
 
 export default function Home() {
-  const [isEnvelopeOpen, setIsEnvelopeOpen] = useState(false);
-  const [lang, setLang] = useState<Language>('en');
-  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
-  const [isCustomizerOpen, setIsCustomizerOpen] = useState(false);
+  const [opened, setOpened] = useState(false);
+  const [playing, setPlaying] = useState(false);
 
-  const [couple, setCouple] = useState<CoupleDetails>(initialCoupleDetails);
-  const [nakaths, setNakaths] = useState(initialNakathTimes);
-  const [wishes, setWishes] = useState<GuestWish[]>(initialWishes);
+  // Personal links: /?to=Nimal%20Silva&guests=2
+  const search = useSyncExternalStore(noSubscribe, () => window.location.search, () => '');
+  const guest = useMemo(() => {
+    const params = new URLSearchParams(search);
+    return {
+      name: params.get('to')?.trim() ?? '',
+      count: Math.max(0, Math.min(20, Number(params.get('guests')) || 0)),
+    };
+  }, [search]);
 
-  const t = dictionary[lang];
+  // Keep the page from scrolling behind the cover
+  useEffect(() => {
+    document.body.style.overflow = opened ? '' : 'hidden';
+  }, [opened]);
 
-  const handleToggleLang = () => {
-    setLang((prev) => (prev === 'en' ? 'si' : 'en'));
-  };
-
-  const handleToggleMusic = () => {
-    setIsMusicPlaying((prev) => !prev);
-  };
-
-  const handleAddWish = (newWish: GuestWish) => {
-    setWishes((prev) => [newWish, ...prev]);
-  };
-
-  const handleResetDefaults = () => {
-    setCouple(initialCoupleDetails);
-    setNakaths(initialNakathTimes);
-    setWishes(initialWishes);
+  const open = () => {
+    setOpened(true);
+    setPlaying(true);
+    window.scrollTo(0, 0);
   };
 
   return (
-    <main className="min-h-screen relative overflow-hidden">
-      {/* Sticky Header Navbar */}
-      <Navbar
-        lang={lang}
-        onToggleLang={handleToggleLang}
-        isMusicPlaying={isMusicPlaying}
-        onToggleMusic={handleToggleMusic}
-        onOpenCustomizer={() => setIsCustomizerOpen(true)}
-      />
+    <main className="relative">
+      <AnimatePresence>{!opened && <Cover onOpen={open} />}</AnimatePresence>
 
-      {/* Hero Envelope Section */}
-      <EnvelopeHero
-        couple={couple}
-        lang={lang}
-        isOpen={isEnvelopeOpen}
-        onOpen={() => {
-          setIsEnvelopeOpen(true);
-          setIsMusicPlaying(true);
-        }}
-      />
+      <Hero guestName={guest.name} guestCount={guest.count} />
+      <ShareLinks />
+      <Couple />
+      <Events />
+      <Venue />
+      <Wishes />
+      <Rsvp key={search} guestName={guest.name} guestCount={guest.count} />
+      <Contact />
+      <Footer />
 
-      {/* Unfolded Main Wedding Invitation Content */}
-      {isEnvelopeOpen && (
-        <div className="space-y-12 sm:space-y-20 pb-24">
-          {/* Countdown Clock */}
-          <CountdownTimer targetDate={couple.weddingDate} lang={lang} />
-
-          {/* Couple Profiles & Story */}
-          <CoupleStory couple={couple} lang={lang} />
-
-          {/* Traditional Nakath Schedule */}
-          <NakathTimeline nakaths={nakaths} lang={lang} />
-
-          {/* Venue & Directions Map */}
-          <VenueMap couple={couple} lang={lang} />
-
-          {/* Interactive RSVP Form */}
-          <RsvpForm lang={lang} />
-
-          {/* Blessings & Wishes Wall */}
-          <WishesWall wishes={wishes} lang={lang} onAddWish={handleAddWish} />
-
-          {/* Pre-Wedding Photo Gallery */}
-          <PhotoGallery couple={couple} lang={lang} />
-
-          {/* Royal Footer */}
-          <footer className="py-12 border-t border-pink-400/20 text-center px-4">
-            <div className="max-w-4xl mx-auto space-y-4">
-              <div className="flex items-center justify-center gap-2 text-pink-300">
-                <Sparkles className="w-4 h-4" />
-                <span className="font-serif gold-text-gradient text-lg font-semibold">
-                  {couple.groomName.split(' ')[0]} & {couple.brideName.split(' ')[0]}
-                </span>
-                <Sparkles className="w-4 h-4" />
-              </div>
-              <p className="text-pink-200/70 text-xs sm:text-sm font-light">
-                {lang === 'si'
-                  ? 'අපගේ මංගල්‍යයට ඔබගේ සහභාගීත්වය සහ ආශීර්වාදය අගය කරමු!'
-                  : 'Thank you for being part of our special beginning!'}
-              </p>
-              <div className="pt-4 flex items-center justify-center gap-1 text-pink-300/50 text-xs">
-                <span>Created with</span>
-                <Heart className="w-3.5 h-3.5 fill-pink-400 text-pink-400" />
-                <span>for Sri Lankan Weddings</span>
-              </div>
-            </div>
-          </footer>
-        </div>
+      {opened && (
+        <>
+          <FallingFeathers />
+          <BottomNav />
+          <MusicButton playing={playing} onToggle={() => setPlaying((p) => !p)} />
+        </>
       )}
-
-      {/* Floating Audio Player */}
-      <MusicPlayer isPlaying={isMusicPlaying} onToggle={handleToggleMusic} />
-
-      {/* Customizer Drawer */}
-      <CustomizerModal
-        isOpen={isCustomizerOpen}
-        onClose={() => setIsCustomizerOpen(false)}
-        couple={couple}
-        onUpdateCouple={setCouple}
-        onReset={handleResetDefaults}
-        lang={lang}
-      />
     </main>
   );
 }
