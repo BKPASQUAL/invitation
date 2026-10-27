@@ -2,6 +2,7 @@
 
 import React, { useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, Heart, Link2, MapPin, MessageCircle, Phone } from 'lucide-react';
+import Image from 'next/image';
 import { wedding } from '@/data/wedding';
 import { buttonOutline, directionsUrl, Feather, Reveal, Section, SectionTitle } from './ui';
 
@@ -44,18 +45,37 @@ export const ShareLinks: React.FC = () => {
 
 /* ---------- Bride & Groom ---------- */
 
+type CirclePhoto = { src: string; face: number[]; zoom: number; aspect: number };
+
+// Places the photo so the face sits in the middle of the circle, without leaving gaps at the edges
+const circleCrop = ({ face: [fx, fy], zoom, aspect }: CirclePhoto): React.CSSProperties => {
+  const clamp = (v: number, min: number) => Math.min(0, Math.max(min, v));
+  const left = clamp(0.5 - fx * zoom, 1 - zoom);
+  const top = clamp(0.5 - fy * zoom * aspect, 1 - zoom * aspect);
+  return {
+    position: 'absolute',
+    maxWidth: 'none',
+    width: `${zoom * 100}%`,
+    height: `${zoom * aspect * 100}%`,
+    left: `${left * 100}%`,
+    top: `${top * 100}%`,
+  };
+};
+
 const PersonCard: React.FC<{
   role: string;
-  person: { name: string; parents: string; photo: string; photoFocus: string };
+  person: { name: string; parents: string; photo: CirclePhoto };
 }> = ({ role, person }) => (
   <div className="flex flex-col items-center rounded-3xl border border-blush-200 bg-white px-6 py-10 text-center shadow-xl shadow-blush-100">
-    <div className="h-32 w-32 overflow-hidden rounded-full border-4 border-white shadow-md ring-2 ring-blush-300">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={person.photo}
+    <div className="relative h-36 w-36 overflow-hidden rounded-full border-4 border-white shadow-md ring-2 ring-blush-300">
+      <Image
+        src={person.photo.src}
         alt={person.name}
-        className="h-full w-full object-cover"
-        style={{ transform: 'scale(5)', transformOrigin: person.photoFocus }}
+        width={600}
+        height={Math.round(600 * person.photo.aspect)}
+        sizes="320px"
+        loading="eager"
+        style={circleCrop(person.photo)}
       />
     </div>
     <p className="mt-6 text-[11px] uppercase tracking-[0.35em] text-blush-500">{role}</p>
@@ -80,7 +100,7 @@ export const Couple: React.FC = () => (
 /* ---------- Events ---------- */
 
 export const Events: React.FC = () => (
-  <Section id="events" tint>
+  <Section id="events">
     <SectionTitle eyebrow="Join us in celebration" title="The Wedding Day" subtitle={wedding.dateLabel} />
     <div className="relative mx-auto max-w-xl">
       <span className="absolute bottom-6 left-[1.15rem] top-6 w-px bg-blush-300" />
@@ -107,7 +127,7 @@ export const Events: React.FC = () => (
 /* ---------- Venue ---------- */
 
 export const Venue: React.FC = () => (
-  <Section id="venue">
+  <Section id="venue" tint>
     <SectionTitle eyebrow="The venue" title="Find Us" />
     <Reveal className="text-center">
       <div className="overflow-hidden rounded-3xl border border-blush-200 shadow-xl shadow-blush-100">
@@ -159,7 +179,7 @@ export const Wishes: React.FC = () => {
     'flex h-10 w-10 items-center justify-center rounded-full border border-blush-300 bg-white text-ink transition hover:bg-blush-50 disabled:opacity-40 cursor-pointer disabled:cursor-default';
 
   return (
-    <Section tint>
+    <Section>
       <SectionTitle eyebrow="From our family & friends" title="Words of Love" />
       <Reveal>
         <div ref={trackRef} onScroll={onScroll} className="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2">

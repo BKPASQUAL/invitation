@@ -74,7 +74,76 @@ body {
   animation: soft-float 4s ease-in-out infinite;
 }
 
+/* Cartoon couple on the opening card */
+@keyframes art-sway {
+  0%, 100% {
+    transform: rotate(-1.5deg);
+  }
+  50% {
+    transform: rotate(1.5deg);
+  }
+}
+.art-sway {
+  transform-box: view-box;
+  transform-origin: 102px 226px;
+  animation: art-sway 4s ease-in-out infinite;
+}
+
+@keyframes art-blink {
+  0%, 90%, 100% {
+    transform: scaleY(1);
+  }
+  94% {
+    transform: scaleY(0.1);
+  }
+}
+.art-blink {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: art-blink 4.5s infinite;
+}
+
+@keyframes art-heart {
+  0% {
+    transform: translateY(0) scale(0.6);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-34px) scale(1.1);
+    opacity: 0;
+  }
+}
+.art-heart {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  animation: art-heart 3.9s ease-out infinite;
+}
+
+@keyframes art-veil {
+  0%, 100% {
+    transform: skewY(0deg);
+  }
+  50% {
+    transform: skewY(3deg);
+  }
+}
+.art-veil {
+  transform-box: fill-box;
+  transform-origin: top left;
+  animation: art-veil 5s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .art-sway,
+  .art-blink,
+  .art-heart,
+  .art-veil {
+    animation: none;
+  }
   .feather,
   .soft-float {
     animation: none;

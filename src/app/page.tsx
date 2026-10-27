@@ -6,6 +6,7 @@ import { Cover } from '@/components/Cover';
 import { Hero } from '@/components/Hero';
 import { ShareLinks, Couple, Events, Venue, Wishes, Contact, Footer } from '@/components/Sections';
 import { Rsvp } from '@/components/Rsvp';
+import { Memories } from '@/components/Memories';
 import { BottomNav, MusicButton } from '@/components/Controls';
 import { FallingFeathers } from '@/components/ui';
 
@@ -43,6 +44,7 @@ export default function Home() {
       <Hero guestName={guest.name} guestCount={guest.count} />
       <ShareLinks />
       <Couple />
+      <Memories />
       <Events />
       <Venue />
       <Wishes />

@@ -4,15 +4,14 @@ export const wedding = {
   bride: {
     name: 'Chandula',
     parents: 'Daughter of Mr. & Mrs. Senanayake',
-    // Photo crop: which point of the image to zoom into (x% y%)
-    photo: '/images/casual.png',
-    photoFocus: '48% 45%',
+    // Circle photo. face = centre of the face as a fraction of the photo (0–1 across, 0–1 down),
+    // zoom = how close to crop (1 = whole width), aspect = photo height ÷ width.
+    photo: { src: '/couple/bride.jpg', face: [0.5, 0.225], zoom: 2.2, aspect: 1.5 },
   },
   groom: {
     name: 'Nawod',
     parents: 'Son of Mr. & Mrs. Gamage',
-    photo: '/images/casual.png',
-    photoFocus: '63% 40%',
+    photo: { src: '/couple/groom.jpg', face: [0.48, 0.27], zoom: 2.2, aspect: 1.5 },
   },
 
   // Local time of the ceremony (used by the countdown and calendar link)
@@ -22,10 +21,24 @@ export const wedding = {
   ceremonyTime: '9:30 AM',
   rsvpBy: '25 January 2027',
 
-  coverImage: '/images/hero.png',
+  // Picture shown when the invitation link is shared (e.g. WhatsApp preview)
+  coverImage: '/memories/memory-7.jpg',
 
   // Background song: put the MP3 file in public/music/ with this name
   music: '/music/perfect.mp3',
+
+  // Memories gallery. The FIRST photo is shown large as the highlight.
+  // Put your photos in public/memories/ and list them here in order.
+  // caption and focus (which part of the photo to keep in view, e.g. 'center top') are optional.
+  memories: [
+    { src: '/memories/memory-1.jpg', caption: 'Where it all began', focus: '55% 40%' },
+    { src: '/memories/memory-2.jpg', focus: '50% 40%' },
+    { src: '/memories/memory-3.jpg', focus: '50% 45%' },
+    { src: '/memories/memory-4.jpg', focus: '55% 50%' },
+    { src: '/memories/memory-5.jpg', focus: '50% 40%' },
+    { src: '/memories/memory-6.jpg', focus: '55% 40%' },
+    { src: '/memories/memory-7.jpg', focus: '50% 35%' },
+  ] as { src: string; caption?: string; focus?: string }[],
 
   events: [
     { time: '9:00 AM', title: 'Arrival of Guests', note: 'Welcome drinks at the reception hall' },

@@ -9,6 +9,7 @@ import { wedding } from '@/data/wedding';
 const LINKS = [
   { id: 'invite', label: 'Invite' },
   { id: 'couple', label: 'Couple' },
+  { id: 'memories', label: 'Photos' },
   { id: 'events', label: 'Events' },
   { id: 'venue', label: 'Venue' },
   { id: 'rsvp', label: 'RSVP' },

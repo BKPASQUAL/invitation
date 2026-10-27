@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
+import { CoupleArt } from './CoupleArt';
 import { motion } from 'framer-motion';
 import { wedding } from '@/data/wedding';
 import { FallingFeathers, Feather } from './ui';
@@ -44,9 +44,7 @@ export const Cover: React.FC<{ onOpen: () => void }> = ({ onOpen }) => (
       </p>
       <p className="mt-2 text-sm tracking-[0.3em] text-blush-600">{wedding.dateShort}</p>
 
-      <div className="relative mx-auto mt-5 h-40 w-32 overflow-hidden rounded-t-full border-4 border-white shadow-lg shadow-blush-300/50 ring-1 ring-blush-300 sm:h-48 sm:w-36">
-        <Image src={wedding.coverImage} alt="" fill sizes="160px" className="object-cover" priority />
-      </div>
+      <CoupleArt className="mx-auto mt-3 h-44 w-auto sm:h-52" />
 
       <span className="soft-float mt-6 inline-block rounded-full border border-blush-400 px-6 py-2 text-[11px] uppercase tracking-[0.3em] text-ink">
         Tap to open

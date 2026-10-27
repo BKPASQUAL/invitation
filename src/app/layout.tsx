@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: `${names} — Wedding Invitation`,
     description: `Join us on ${wedding.dateLabel} at ${wedding.venue.name}.`,
-    images: ['/images/hero.png'],
+    images: [wedding.coverImage],
   },
 };
 
